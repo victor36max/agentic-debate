@@ -1,6 +1,8 @@
 # agentic-debate
 
-A [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skill that stress-tests any idea, decision, code, or proposal using a 3-agent adversarial debate.
+A [SKILL.md](https://claude.com/blog/skills) agent skill that stress-tests any idea, decision, code, or proposal using a 3-agent adversarial debate.
+
+Works with any harness that supports the Agent Skills open standard — Claude Code, Claude.ai, Codex CLI, ChatGPT, Cursor, Gemini CLI, GitHub Copilot, Windsurf, Goose, Roo Code, and more.
 
 Instead of fighting LLM sycophancy, this technique **exploits** it — each agent gets a fake scoring incentive that channels its eagerness to please in exactly the right direction.
 
@@ -20,14 +22,16 @@ The result: a superset of findings, filtered through adversarial challenge, judg
 
 ## Installation
 
-Copy the skill into your Claude Code skills directory:
+### Claude Code / Codex CLI / Gemini CLI / Goose
+
+Copy the skill into your skills directory:
 
 ```bash
 mkdir -p ~/.claude/skills/agentic-debate
 cp SKILL.md ~/.claude/skills/agentic-debate/SKILL.md
 ```
 
-Or clone this repo and symlink:
+Or clone and symlink:
 
 ```bash
 git clone https://github.com/victor36max/agentic-debate.git
@@ -35,7 +39,13 @@ mkdir -p ~/.claude/skills
 ln -s "$(pwd)/agentic-debate" ~/.claude/skills/agentic-debate
 ```
 
-The skill will be automatically discovered by Claude Code.
+### Claude.ai / ChatGPT
+
+Upload or paste the `SKILL.md` contents into your project's custom instructions or skills settings.
+
+### Cursor / Windsurf / Other IDEs
+
+Add the `SKILL.md` to your project's skills directory or custom instructions — wherever your tool loads skill definitions from. See your tool's docs for the specific path.
 
 ## Usage
 
@@ -83,8 +93,8 @@ The scoring incentives exploit each agent's desire to maximize its score, channe
 
 ## Requirements
 
-- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) CLI
-- The skill uses these Claude Code tools: `Read`, `Grep`, `Glob`, `Bash`, `Agent`, `WebSearch`, `WebFetch`
+- Any AI coding agent or harness that supports the [Agent Skills](https://claude.com/blog/skills) open standard
+- For full functionality, the host should support subagent spawning and tool use (`Read`, `Grep`, `Glob`, `Bash`, `Agent`, `WebSearch`, `WebFetch`)
 
 ## License
 
