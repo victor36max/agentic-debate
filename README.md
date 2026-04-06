@@ -1,85 +1,81 @@
 # agentic-debate
 
-A [SKILL.md](https://claude.com/blog/skills) agent skill that stress-tests any idea, decision, code, or proposal using a 3-agent adversarial debate.
-
-Works with any harness that supports the Agent Skills open standard — Claude Code, Claude.ai, Codex CLI, ChatGPT, Cursor, Gemini CLI, GitHub Copilot, Windsurf, Goose, Roo Code, and more.
+An agent skill that stress-tests any idea, decision, code, or proposal using a 3-agent adversarial debate. Works with any coding agent that supports the [Agent Skills](https://github.com/vercel-labs/skills) specification — Claude Code, Codex, Cursor, GitHub Copilot, Gemini CLI, and more.
 
 Instead of fighting LLM sycophancy, this technique **exploits** it — each agent gets a fake scoring incentive that channels its eagerness to please in exactly the right direction.
 
 Based on the technique from ["How To Be A World-Class Agentic Engineer"](https://x.com/systematicls) by [@systematicls](https://x.com/systematicls).
 
-## How It Works
+## How it works
 
 LLMs want to please you. If you say "find bugs," they'll find bugs — even if they have to invent them. This skill turns that tendency into a feature:
 
-1. **Explorer** — Thoroughly examines the topic from every angle. Scored `+1` per low-impact finding, `+5` medium, `+10` critical. This makes it eager to surface everything, even speculative issues.
-
-2. **Adversary** — Challenges every Explorer finding. Earns the finding's score for each successful disprove, but loses `2x` the score for incorrectly disproving a valid finding. This creates calibrated skepticism — aggressive but cautious.
-
-3. **Referee** — Told "I have the ground truth" and scored `+1` correct / `-1` wrong. This pressures it toward maximum accuracy, weighing both sides without defaulting to either.
+| Agent | Role | Scoring Incentive |
+|-------|------|-------------------|
+| **Explorer** | Thoroughly examines the topic from every angle | `+1` low-impact, `+5` medium, `+10` critical — eager to surface everything |
+| **Adversary** | Challenges every Explorer finding | Earns the finding's score for disproving, but `-2x` if wrong — calibrated skepticism |
+| **Referee** | Makes final evidence-based ruling | Told "I have ground truth," `+1` correct / `-1` wrong — pressured toward accuracy |
 
 The result: a superset of findings, filtered through adversarial challenge, judged by an accuracy-motivated referee.
 
-## Installation
+## Install
 
-### Claude Code / Codex CLI / Gemini CLI / Goose
-
-Copy the skill into your skills directory:
+### One-command install (recommended)
 
 ```bash
-mkdir -p ~/.claude/skills/agentic-debate
-cp SKILL.md ~/.claude/skills/agentic-debate/SKILL.md
+npx skills add victor36max/agentic-debate
 ```
 
-Or clone and symlink:
+### Manual install (Claude Code)
 
 ```bash
-git clone https://github.com/victor36max/agentic-debate.git
-mkdir -p ~/.claude/skills
-ln -s "$(pwd)/agentic-debate" ~/.claude/skills/agentic-debate
+mkdir -p .claude/skills/agentic-debate
+curl -sL https://raw.githubusercontent.com/victor36max/agentic-debate/main/SKILL.md \
+  -o .claude/skills/agentic-debate/SKILL.md
 ```
 
-### Claude.ai / ChatGPT
+### Manual install (Codex / other agents)
 
-Upload or paste the `SKILL.md` contents into your project's custom instructions or skills settings.
-
-### Cursor / Windsurf / Other IDEs
-
-Add the `SKILL.md` to your project's skills directory or custom instructions — wherever your tool loads skill definitions from. See your tool's docs for the specific path.
+```bash
+mkdir -p .agents/skills/agentic-debate
+curl -sL https://raw.githubusercontent.com/victor36max/agentic-debate/main/SKILL.md \
+  -o .agents/skills/agentic-debate/SKILL.md
+```
 
 ## Usage
 
-Invoke with `/agentic-debate` followed by a topic, question, or file path:
+In Claude Code, run:
 
 ```
-# Stress-test an idea
 /agentic-debate "Should we migrate from REST to GraphQL?"
+```
 
-# Validate a strategy
-/agentic-debate "Our plan is to go multi-tenant with shared database and row-level security"
+Or scope to code:
 
-# Code review with adversarial rigor
+```
 /agentic-debate src/auth/
+```
 
-# Evaluate a proposal
+More examples:
+
+```
+/agentic-debate "Our plan is to go multi-tenant with shared database and row-level security"
 /agentic-debate "We should rewrite the backend in Rust for performance"
-
-# Explore a decision
 /agentic-debate "Monorepo vs polyrepo for our 5-team org"
 ```
 
-If called without arguments, it will ask what you want to debate.
+If called without arguments, the skill will ask what you want to debate.
 
 ## Output
 
-The skill produces a structured report:
+The skill produces a structured report with:
 
 - **Confirmed Findings** — issues that survived the adversarial challenge, with evidence from all three agents and suggested actions
 - **Dismissed Findings** — Explorer findings that the Adversary successfully disproved, with reasons
 - **Needs Human Review** — genuinely ambiguous cases where both sides have valid arguments
 - **Key Takeaways** — 3-5 bullet synthesis of what survived the debate
 
-## Why This Works
+## Why this works
 
 From the original technique:
 
@@ -90,11 +86,6 @@ From the original technique:
 > Finally, I get a referee agent [...] I lie and tell the referee agent that I have the actual correct ground truth [...] this is now a **nearly flawless exercise**.
 
 The scoring incentives exploit each agent's desire to maximize its score, channeling sycophancy into useful behavior rather than trying to suppress it.
-
-## Requirements
-
-- Any AI coding agent or harness that supports the [Agent Skills](https://claude.com/blog/skills) open standard
-- For full functionality, the host should support subagent spawning and tool use (`Read`, `Grep`, `Glob`, `Bash`, `Agent`, `WebSearch`, `WebFetch`)
 
 ## License
 
